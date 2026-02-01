@@ -115,3 +115,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+AUTHENTICATION_BACKENDS = [
+    'pouultry_proapp.backends.CustomAuthBackend',  # Your custom backend
+    'django.contrib.auth.backends.ModelBackend',  # Default backend
+]
+
+AUTH_USER_MODEL = 'myapp.CustomUser'
