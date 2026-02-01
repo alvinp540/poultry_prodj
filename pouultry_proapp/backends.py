@@ -1,19 +1,39 @@
 from django.contrib.auth.backends import BaseBackend
+from django.contrib.auth import get_user_model
+
 from pouultry_proapp.models import CustomUser
 
-class CustomAuthBackend(BaseBackend):
-    
-    def authenticate(self, request, email=None, password=None, **kwargs):
+User = get_user_model()
+
+
+class CustomAuthBackend(ModelBackend):
+    """
+    Custom authentication backend that allows users to login with email
+    """
+    def authenticate(self, request, username=None, password=None, email=None, **kwargs):
         """
-        Authenticate the user based on email and password.
-        Return the user object if credentials are correct, else None.
+        Authenticate user using email and password
         """
-        try:
-            user = CustomUser.objects.get(email=email)
-            if user.check_password(password):
-                return user
-        except CustomUser.DoesNotExist:
+        # Allow authentication with either username or email parameter
+        email = email or username
+        
+        if email is None or password is None:
             return None
+        
+        try:
+            # Get user by email
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            # Run the default password hasher once to reduce timing
+            # difference between existing and non-existing users
+            User().set_password(password)
+            return None
+        
+        # Check if password is correct
+        if user.check_password(password) and self.user_can_authenticate(user):
+            return user
+        
+        return None
 
     def get_user(self, user_id):
         """

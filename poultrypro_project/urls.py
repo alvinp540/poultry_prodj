@@ -14,9 +14,22 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.urls import include
 from django.contrib import admin
 from django.urls import path
+from django.contrib.auth import views 
+from django.conf.urls import handler404, handler500
+from django_registration.backends.one_step.views import RegistrationView
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('pouultry_proapp.urls')),  # Include app URLs
+    path('accounts/register/', RegistrationView.as_view(success_url='/'),name='django_registration_register'),
+    path('accounts/', include('django_registration.backends.one_step.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),  # For password reset and other auth views
 ]
+
+
+handler404 = 'pouultry_proapp.views.error_404'

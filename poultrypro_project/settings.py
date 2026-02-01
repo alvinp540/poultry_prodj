@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'pouultry_proapp',
 ]
 
 MIDDLEWARE = [
@@ -121,4 +122,6 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # Default backend
 ]
 
-AUTH_USER_MODEL = 'myapp.CustomUser'
+AUTH_USER_MODEL = 'pouultry_proapp.CustomUser'
+LOGIN_URL = 'login'  # redirect here if user is not authenticated
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
